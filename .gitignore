@@ -1,0 +1,4 @@
+/gifs/
+*.tmp
+.DS_Store
+Thumbs.db

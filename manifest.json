@@ -1,0 +1,22 @@
+{
+  "name": "健身助手",
+  "short_name": "健身助手",
+  "description": "私人健身动作库 - 1324 个动作，含 GIF 演示和中文说明",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f5f5",
+  "theme_color": "#2196F3",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
