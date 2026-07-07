@@ -268,12 +268,19 @@ function showDetail(exercise) {
 
   DOM.detailModal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+
+  // Push history state so back button closes modal
+  history.pushState({ modal: 'detail', id: exercise.id }, '', `#detail-${exercise.id}`);
 }
 
-function closeDetail() {
+function closeDetail(silent) {
   DOM.detailModal.classList.add('hidden');
   document.body.style.overflow = '';
   STATE.currentDetail = null;
+  // Pop history state if we pushed one (silent = called from popstate, don't pop again)
+  if (!silent && history.state?.modal === 'detail') {
+    history.back();
+  }
 }
 
 // ==================== 收藏功能 ====================
@@ -360,11 +367,15 @@ function openFilter() {
   populateFilterTags();
   DOM.filterModal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  history.pushState({ modal: 'filter' }, '', '#filter');
 }
 
 function closeFilter() {
   DOM.filterModal.classList.add('hidden');
   document.body.style.overflow = '';
+  if (history.state?.modal === 'filter') {
+    history.back();
+  }
 }
 
 function resetFilter() {
@@ -424,8 +435,38 @@ function bindEvents() {
   DOM.filterModal.querySelector('.modal-backdrop').addEventListener('click', closeFilter);
 
   // Detail modal
-  $('#btnCloseDetail').addEventListener('click', closeDetail);
-  DOM.detailModal.querySelector('.modal-backdrop').addEventListener('click', closeDetail);
+  $('#btnCloseDetail').addEventListener('click', () => closeDetail(false));
+  DOM.detailModal.querySelector('.modal-backdrop').addEventListener('click', () => closeDetail(false));
+
+  // History back button: close modals instead of navigating away
+  window.addEventListener('popstate', (e) => {
+    if (e.state?.modal === 'detail') {
+      closeDetail(true);
+    } else if (e.state?.modal === 'filter') {
+      closeFilter();
+    }
+  });
+
+  // Swipe down to close detail modal
+  let touchStartY = 0;
+  DOM.detailModal.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  DOM.detailModal.addEventListener('touchmove', (e) => {
+    const deltaY = e.touches[0].clientY - touchStartY;
+    const modalContent = DOM.detailModal.querySelector('.modal-content');
+    if (deltaY > 0 && modalContent.scrollTop <= 0) {
+      modalContent.style.transform = `translateY(${deltaY}px)`;
+    }
+  }, { passive: true });
+  DOM.detailModal.addEventListener('touchend', (e) => {
+    const deltaY = e.changedTouches[0].clientY - touchStartY;
+    const modalContent = DOM.detailModal.querySelector('.modal-content');
+    modalContent.style.transform = '';
+    if (deltaY > 80) {
+      closeDetail(false);
+    }
+  });
 
   // Favorite
   DOM.btnToggleFavorite.addEventListener('click', () => {

@@ -313,6 +313,7 @@ body {
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s ease-out;
+  transition: transform 0.15s ease-out;
 }
 
 .modal-detail {
