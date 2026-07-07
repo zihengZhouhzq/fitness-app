@@ -312,6 +312,53 @@ function showFavorites() {
   renderExercises();
 }
 
+function exportFavorites() {
+  if (STATE.favorites.length === 0) {
+    showToast('暂无收藏');
+    return;
+  }
+  const data = JSON.stringify(STATE.favorites, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'fitness_favorites.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`已导出 ${STATE.favorites.length} 个收藏`);
+}
+
+function importFavorites(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const ids = JSON.parse(reader.result);
+      if (!Array.isArray(ids)) throw new Error('Invalid format');
+      const valid = ids.filter(id => STATE.exercises.some(ex => ex.id === id));
+      STATE.favorites = [...new Set([...STATE.favorites, ...valid])];
+      localStorage.setItem('fitness_favorites', JSON.stringify(STATE.favorites));
+      if (STATE.currentPage === 'favorite') showFavorites();
+      showToast(`已导入 ${valid.length} 个收藏`);
+    } catch (err) {
+      showToast('文件格式错误');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
 // ==================== 随机功能 ====================
 function showRandomExercise() {
   if (STATE.exercises.length === 0) return;
@@ -414,6 +461,8 @@ function switchPage(page) {
       showRandomExercise();
       break;
   }
+  // Show export bar only on favorites page
+  $('#exportBar').classList.toggle('hidden', page !== 'favorite');
 }
 
 // ==================== 事件绑定 ====================
@@ -490,6 +539,13 @@ function bindEvents() {
   window.addEventListener('scroll', () => {
     btnTop.classList.toggle('hidden', window.scrollY < 300);
   }, { passive: true });
+
+  // Export/Import favorites
+  $('#btnExport').addEventListener('click', exportFavorites);
+  $('#btnImport').addEventListener('click', () => {
+    $('#importFile').click();
+  });
+  $('#importFile').addEventListener('change', importFavorites);
 
   // Keyboard
   document.addEventListener('keydown', (e) => {

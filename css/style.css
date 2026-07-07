@@ -625,3 +625,50 @@ body {
   pointer-events: none;
   transform: translateY(20px);
 }
+
+/* Export/Import Bar */
+.export-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.btn-export,
+.btn-import {
+  flex: 1;
+  padding: 10px 0;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-export:active,
+.btn-import:active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.toast {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 300;
+  animation: toastIn 0.3s ease-out;
+  pointer-events: none;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

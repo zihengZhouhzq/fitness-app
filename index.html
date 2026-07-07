@@ -30,6 +30,13 @@
 
   <!-- Main Content -->
   <main class="main-content">
+    <!-- Export/Import bar (shown on favorites page) -->
+    <div id="exportBar" class="export-bar hidden">
+      <button id="btnExport" class="btn-export">导出收藏</button>
+      <button id="btnImport" class="btn-import">导入收藏</button>
+      <input type="file" id="importFile" accept=".json" class="hidden">
+    </div>
+
     <!-- Exercise Grid -->
     <div id="exerciseGrid" class="exercise-grid"></div>
 
