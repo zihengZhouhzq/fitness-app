@@ -594,3 +594,34 @@ body {
   background: #ccc;
   border-radius: 2px;
 }
+
+/* Back to Top */
+.btn-back-to-top {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 80px);
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+  transition: opacity 0.3s, transform 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-back-to-top:active {
+  transform: scale(0.9);
+}
+
+.btn-back-to-top.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}

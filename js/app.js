@@ -482,6 +482,15 @@ function bindEvents() {
     });
   });
 
+  // Back to top
+  const btnTop = $('#btnBackToTop');
+  btnTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  window.addEventListener('scroll', () => {
+    btnTop.classList.toggle('hidden', window.scrollY < 300);
+  }, { passive: true });
+
   // Keyboard
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
